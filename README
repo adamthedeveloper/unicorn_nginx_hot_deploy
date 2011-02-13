@@ -1,0 +1,28 @@
+
+  # Configuration examples so that one can do a hot deploy to production
+  # Assumes you are running Nginx, Unicorn and Capistrano
+  # Assumes environment uses RVM and Bundler
+  # Written by Adam Medeiros (adamthedeveloper)
+
+  # Here is an example of how to do the hot deploy. To understand what's happening, please open up
+  # nginx.conf and search for "upstream" - you'll see that traffic to nginx will be directed to the
+  # new cluster of unicorn workers if the reroute.txt file exists. Then, we kill the original cluster - so
+  # the steps are:
+  # 1. Pull code from the repo
+  # 2. Fire up a new cluster of unicorns on a different port and/or different socket name
+  # 3. Create a reroute.txt file in the public/system folder or location of choice
+  # 4. Nginx sees reroute.txt and forwards all requests to the new cluster of unicorns running new code
+  # 5. Shut down old cluster
+  # 6. Bring up new cluster with the original, permanent settings
+  # 7. remove the reroute.txt file
+  # 8. kill the temporary cluster created in step 2.
+
+  # DESIRED RESULTS
+  # There shouldn't have been an interruption in the visitors experience and we are now running the new code
+
+  # NOTE: One could also set this up so that the reroute.txt is called either 8080_reroute.txt or 9090_reroute.txt
+  # and nginx can be configured to route traffic to the appropriate socket depending on the reroute file - this would
+  # make it so that you just fire up a new cluster of unicorns and switch to the new one and bring down the old one -
+  # back and forth each time there is a deploy. Less steps.
+
+  # cap deploy:hot
